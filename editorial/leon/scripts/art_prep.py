@@ -120,3 +120,10 @@ lens("08", "piece_d2", .70, .70, .07)
 
 json.dump(man, open(f"{OUT}/manifest.json", "w"), indent=1)
 print("ok", len(man))
+
+# ---- set 2: memory pair (p.17/18) and pattern page (p.30) — one fixed tile per colour family
+TILES = {"blue": ("15", .45, .45), "red": ("01", .35, .30), "honey": ("02", .40, .45), "black": ("07", .45, .40),
+         "sepia": ("06", .35, .55), "green": ("08", .75, .72), "multi": ("12", .30, .30)}
+for name, (k, x, y) in TILES.items():
+    lens(k, f"tile_{name}", x, y, 0.09)
+json.dump(man, open(f"{OUT}/manifest.json", "w"), indent=1)
