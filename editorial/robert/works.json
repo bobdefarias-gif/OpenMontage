@@ -1,0 +1,219 @@
+{
+ "artist": "Robert",
+ "collection": "Obra sobre papel",
+ "publisher": "Edição do artista",
+ "year": "2026",
+ "volumes": [
+  {
+   "id": "I",
+   "slug": "linha",
+   "title": "Linha",
+   "subtitle": "Desenhos a tinta",
+   "accent": "#151412",
+   "accent_ink": "#F3EFE7",
+   "cover": {
+    "work": "14",
+    "crop": [
+     0.0,
+     0.0,
+     1.0,
+     1.0
+    ]
+   },
+   "frontis": "11",
+   "works": [
+    "07",
+    "09",
+    "11",
+    "14",
+    "06",
+    "10"
+   ],
+   "epigraph": "Uma linha é um ponto que saiu para passear.",
+   "epigraph_src": "Paul Klee",
+   "essay": [
+    "Neste primeiro volume a linha trabalha sozinha. Sem a muleta da cor, cada traço tem de sustentar o peso inteiro do desenho: é contorno, é sombra, é ritmo, é matéria.",
+    "Há aqui duas famílias de gesto. A primeira é paciente e repetitiva — faixas paralelas que se dobram, se abrem em leque e se acumulam até que o papel pareça ter relevo, como estratos de rocha ou a madeira cortada no sentido do veio. A segunda é construtiva: blocos, rampas e encaixes que flutuam sem gravidade, arquiteturas que só existem enquanto o olho as percorre.",
+    "Entre as duas surgem as cabeças. Rostos de perfil feitos não de traços anatômicos, mas de padrões — um mosaico de triângulos, uma corrente de faixas —, como se a figura fosse apenas um lugar onde a linha decidiu se adensar.",
+    "A sequência proposta não é cronológica. Ela vai do campo aberto ao retrato e volta ao campo, para que o leitor perceba que, neste trabalho, paisagem e rosto são feitos exatamente da mesma substância."
+   ],
+   "frontis_crop": [
+    0.0,
+    0.02,
+    1.0,
+    0.57
+   ],
+   "panorama": {
+    "work": "07",
+    "crop": [
+     0,
+     0.28,
+     1,
+     0.56
+    ]
+   }
+  },
+  {
+   "id": "II",
+   "slug": "escrita",
+   "title": "Escrita",
+   "subtitle": "Caligrafias inventadas",
+   "accent": "#B8402A",
+   "accent_ink": "#FBF4EC",
+   "cover": {
+    "work": "08",
+    "crop": [
+     0.0,
+     0.0,
+     1.0,
+     1.0
+    ]
+   },
+   "frontis": "01",
+   "works": [
+    "01",
+    "08",
+    "03",
+    "15"
+   ],
+   "epigraph": "",
+   "epigraph_src": "",
+   "essay": [
+    "Estas folhas parecem cartas escritas num alfabeto que ninguém nos ensinou. Laços, ganchos, espirais e serrilhados se alinham em fileiras, formam palavras sem sentido e frases sem gramática — e, mesmo assim, lemos.",
+    "É a chamada escrita assêmica: a forma da escrita libertada da obrigação de significar. O pincel conserva o andamento de quem escreve — a pressão que engrossa, a pausa que interrompe, a mão que acelera no fim da linha —, mas o conteúdo é puro desenho.",
+    "Às vezes o texto se organiza em criaturas: um peixe de traços vermelhos, um pássaro azul que espia por entre ondas de tinta. Em outras ocasiões ele simplesmente cobre a folha inteira, como uma rede de rachaduras ou um mapa de rios.",
+    "O volume deve ser lido devagar, como se lê uma página manuscrita: de perto, linha por linha. Por isso cada obra vem acompanhada de um detalhe ampliado, em que o gesto aparece em escala próxima à do pincel."
+   ],
+   "frontis_crop": [
+    0.0,
+    0.14,
+    0.48,
+    0.47
+   ],
+   "panorama": {
+    "work": "15",
+    "crop": [
+     0,
+     0.22,
+     1,
+     0.56
+    ]
+   }
+  },
+  {
+   "id": "III",
+   "slug": "cor",
+   "title": "Cor",
+   "subtitle": "Gesto e figura",
+   "accent": "#2C3E9E",
+   "accent_ink": "#F4F1FA",
+   "cover": {
+    "work": "16",
+    "crop": [
+     0.0,
+     0.0,
+     1.0,
+     1.0
+    ]
+   },
+   "frontis": "12",
+   "works": [
+    "02",
+    "04",
+    "12",
+    "05",
+    "13",
+    "16"
+   ],
+   "epigraph": "A cor é o lugar onde o nosso cérebro e o universo se encontram.",
+   "epigraph_src": "Paul Cézanne",
+   "essay": [
+    "O último volume parte da mancha mínima — uma pincelada isolada, que pousa e se retira — e chega à pintura que ocupa a folha de ponta a ponta.",
+    "Nas primeiras pranchas, centenas de toques de ocre, mel e terra se espalham como um enxame; em outras, vermelhos, laranjas e azuis se reúnem até formar o contorno de um peixe. A figura não é desenhada: ela aparece quando há gestos suficientes no mesmo lugar.",
+    "Depois a cor ganha corpo. Faixas de aquarela se organizam em campos e correntes; um ser de olhos azuis se recorta contra um fundo verde; um pássaro improvável exibe a plumagem toda de uma vez. No fim, a folha é tomada por planos saturados, vibrantes, em que o branco do papel volta a aparecer como fresta de luz.",
+    "Lido em conjunto com Linha e Escrita, este volume completa o percurso: da linha à palavra, da palavra à cor."
+   ],
+   "frontis_crop": [
+    0.5,
+    0.02,
+    0.48,
+    0.48
+   ],
+   "panorama": {
+    "work": "02",
+    "crop": [
+     0,
+     0.22,
+     1,
+     0.56
+    ]
+   }
+  }
+ ],
+ "works": {
+  "01": {
+   "title": "Sem título",
+   "medium": "Aquarela sobre papel"
+  },
+  "02": {
+   "title": "Sem título",
+   "medium": "Aquarela sobre papel"
+  },
+  "03": {
+   "title": "Sem título",
+   "medium": "Aquarela e tinta sobre papel"
+  },
+  "04": {
+   "title": "Sem título",
+   "medium": "Aquarela sobre papel"
+  },
+  "05": {
+   "title": "Sem título",
+   "medium": "Aquarela e guache sobre papel"
+  },
+  "06": {
+   "title": "Sem título",
+   "medium": "Aquarela sobre papel"
+  },
+  "07": {
+   "title": "Sem título",
+   "medium": "Tinta sobre papel"
+  },
+  "08": {
+   "title": "Sem título",
+   "medium": "Aquarela sobre papel"
+  },
+  "09": {
+   "title": "Sem título",
+   "medium": "Tinta sobre papel"
+  },
+  "10": {
+   "title": "Sem título",
+   "medium": "Aquarela sobre papel"
+  },
+  "11": {
+   "title": "Sem título",
+   "medium": "Tinta sobre tela"
+  },
+  "12": {
+   "title": "Sem título",
+   "medium": "Aquarela sobre papel"
+  },
+  "13": {
+   "title": "Sem título",
+   "medium": "Aquarela sobre papel"
+  },
+  "14": {
+   "title": "Sem título",
+   "medium": "Tinta sobre papel"
+  },
+  "15": {
+   "title": "Sem título",
+   "medium": "Aquarela sobre papel"
+  },
+  "16": {
+   "title": "Sem título",
+   "medium": "Aquarela e guache sobre papel"
+  }
+ }
+}
