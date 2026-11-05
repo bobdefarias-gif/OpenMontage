@@ -8,10 +8,22 @@ Writes art/*.png and art/manifest.json (crop positions -> used by the answer key
 import cv2, numpy as np, json, os
 
 R = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PLATES = os.path.join(os.path.dirname(R), "robert", "plates")
+PLATES = os.environ.get("PLATES", os.path.join(os.path.dirname(R), "robert", "plates"))
 OUT = f"{R}/art"
 os.makedirs(OUT, exist_ok=True)
 man = {}
+
+
+LENS_MAX = int(os.environ.get("LENS_MAX", 760))
+CUT_MAX = int(os.environ.get("CUT_MAX", 2300))
+
+
+def cap(im, mx):
+    h, w = im.shape[:2]
+    if max(h, w) <= mx:
+        return im
+    s = mx / max(h, w)
+    return cv2.resize(im, (int(w * s), int(h * s)), interpolation=cv2.INTER_AREA)
 
 
 def load(k):
@@ -43,8 +55,9 @@ def cutout(k, name, lo=10, hi=60, pad=12):
     ys, xs = np.where(mask)
     y0, y1, x0, x1 = max(ys.min() - pad, 0), ys.max() + pad, max(xs.min() - pad, 0), xs.max() + pad
     rgba = rgba[y0:y1, x0:x1]
-    cv2.imwrite(f"{OUT}/{name}.png", rgba)
-    man[name] = {"src": k, "w": rgba.shape[1], "h": rgba.shape[0], "x0": int(x0), "y0": int(y0), "W": int(img.shape[1]), "H": int(img.shape[0])}
+    cw_, ch_ = rgba.shape[1], rgba.shape[0]
+    cv2.imwrite(f"{OUT}/{name}.png", cap(rgba, CUT_MAX))
+    man[name] = {"src": k, "w": cw_, "h": ch_, "x0": int(x0), "y0": int(y0), "W": int(img.shape[1]), "H": int(img.shape[0])}
     return rgba
 
 
@@ -68,7 +81,7 @@ def silhouette(rgba, name, close=25, color=(58, 44, 36), flip=False):
     man[name] = {"w": out.shape[1], "h": out.shape[0]}
 
 
-def lens(k, name, cx, cy, r, search=0.12):
+def lens(k, name, cx, cy, r, search=0.12, mx=None):
     """Circular crop; cx, cy, r normalized (r to width). Snaps to the inkiest spot near (cx, cy)."""
     img = load(k)
     h, w = img.shape[:2]
@@ -86,9 +99,10 @@ def lens(k, name, cx, cy, r, search=0.12):
     X, Y = bx, by
     cx, cy = X / w, Y / h
     crop = img[Y - R_:Y + R_, X - R_:X + R_]
-    m = np.zeros(crop.shape[:2], np.uint8)
-    cv2.circle(m, (R_, R_), R_ - 2, 255, -1, lineType=cv2.LINE_AA)
-    cv2.imwrite(f"{OUT}/{name}.png", np.dstack([crop, m]))
+    mx = mx or LENS_MAX
+    if crop.shape[0] > mx:
+        crop = cv2.resize(crop, (mx, mx), interpolation=cv2.INTER_AREA)
+    cv2.imwrite(f"{OUT}/{name}.jpg", crop, [cv2.IMWRITE_JPEG_QUALITY, 90])
     man[name] = {"src": k, "cx": cx, "cy": cy, "r": r}
 
 
@@ -126,4 +140,45 @@ TILES = {"blue": ("15", .45, .45), "red": ("01", .35, .30), "honey": ("02", .40,
          "sepia": ("06", .35, .55), "green": ("08", .75, .72), "multi": ("12", .30, .30)}
 for name, (k, x, y) in TILES.items():
     lens(k, f"tile_{name}", x, y, 0.09)
+json.dump(man, open(f"{OUT}/manifest.json", "w"), indent=1)
+
+
+# ---- V1 art map extras: whole works as pictures (sheet kept) for p.36 / p.37
+for k in ["02", "15", "07", "12", "13", "01", "04"]:
+    im = load(k)
+    name = f"work{k}" if k not in ("02", "15") else f"painting{k}"
+    cv2.imwrite(f"{OUT}/{name}.jpg", cap(im, 1500), [cv2.IMWRITE_JPEG_QUALITY, 90])
+    man[name] = {"src": k, "w": im.shape[1], "h": im.shape[0]}
+    if k in ("02", "15"):
+        cv2.imwrite(f"{OUT}/work{k}.jpg", cap(im, 1500), [cv2.IMWRITE_JPEG_QUALITY, 90]); man[f"work{k}"] = man[name]
+json.dump(man, open(f"{OUT}/manifest.json", "w"), indent=1)
+
+# ---- V2 extras
+cutout("14", "face14"); cutout("11", "face11")
+for k in ["14", "11", "05", "09", "08", "03", "10"]:
+    im = load(k)
+    cv2.imwrite(f"{OUT}/work{k}.jpg", cap(im, 1500), [cv2.IMWRITE_JPEG_QUALITY, 90]); man[f"work{k}"] = {"src": k, "w": im.shape[1], "h": im.shape[0]}
+# detail detective (p.8): 3 pieces of the geometric face + 1 look-alike from the black blocks
+for i, (x, y) in enumerate([(.25, .35), (.55, .30), (.40, .70)]):
+    lens("14", f"det_{i}", x, y, 0.075)
+lens("09", "det_x", .45, .40, 0.075)
+# odd one out PRO (p.12): look-alike pairs
+for name, (k, x, y) in {"a06": ("06", .3, .4), "b06": ("06", .7, .6), "c06": ("06", .5, .3), "d06": ("06", .2, .7),
+                        "x10": ("10", .5, .5), "a07": ("07", .3, .4), "b07": ("07", .6, .6), "c07": ("07", .7, .3),
+                        "d07": ("07", .4, .7), "x09": ("09", .4, .4), "a15": ("15", .3, .3), "b15": ("15", .6, .6),
+                        "c15": ("15", .7, .3), "d15": ("15", .3, .7), "x03": ("03", .2, .8), "a08": ("08", .7, .7),
+                        "b08": ("08", .5, .8), "c08": ("08", .8, .5), "d08": ("08", .6, .55), "x12": ("12", .55, .6)}.items():
+    lens(k, f"pro_{name}", x, y, 0.08)
+lens("09", "turn_target", .40, .40, 0.08); lens("09", "turn_other", .75, .65, 0.08); lens("07", "turn_x", .5, .5, 0.08)
+img = cv2.imread(f"{OUT}/turn_target.jpg")
+cv2.imwrite(f"{OUT}/turn_rot.jpg", cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)); man["turn_rot"] = man["turn_target"]
+img = cv2.imread(f"{OUT}/turn_other.jpg")
+cv2.imwrite(f"{OUT}/turn_other_rot.jpg", cv2.rotate(img, cv2.ROTATE_180)); man["turn_other_rot"] = man["turn_other"]
+lens("07", "griddraw", .5, .45, 0.16, mx=1500)
+json.dump(man, open(f"{OUT}/manifest.json", "w"), indent=1)
+
+# ---- covers: larger crops (more pixels for print)
+for name, (k, x, y) in {"red": ("01", .35, .30), "honey": ("02", .40, .45), "blue": ("15", .45, .45), "green": ("08", .72, .70),
+                        "black": ("07", .45, .40), "multi": ("12", .30, .30), "sepia": ("06", .35, .55)}.items():
+    lens(k, f"cov_{name}", x, y, 0.13, mx=900)
 json.dump(man, open(f"{OUT}/manifest.json", "w"), indent=1)
