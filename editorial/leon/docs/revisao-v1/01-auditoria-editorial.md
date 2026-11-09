@@ -16,7 +16,7 @@
 | 2 | Instrução errada: "Draw the next fish", mas a linha 2 é de estrelas | 33 | Alta |
 | 3 | Frase de venda que não corresponde ao livro: "Every page is a small game built from the artwork… his sculptures" | 4 | Alta |
 | 4 | Nomes das categorias inconsistentes: o mapa diz "Look closely, Remember…" e o rodapé diz "Attention & Observation, Memory…" | 7 e rodapés | Alta |
-| 5 | Ligações em linha reta: cada Leon já está ao lado da carinha certa, então a criança não precisa pensar | 66 | Alta |
+| 5 | Ligações: uma das 4 ligações é em linha reta (Leon zangado → carinha zangada), o que dá uma pista fácil | 66 | Média |
 | 6 | Imagem ambígua: "dish" está desenhado como um prato, e a criança dirá "plate", que não rima com "fish" | 55 | Média |
 | 7 | Ambiguidade de forma: o corpo do robô é quase quadrado, mas o gabarito conta só 3 quadrados | 24 | Média |
 | 8 | Uma só emoção "certa" por situação, contra a meta de consciência emocional sem julgamento | 67 | Média |
@@ -96,7 +96,7 @@
 | 63 | Mirror butterfly | Simetria | — | Manter | Baixa |
 | 64 | Which piece fits? | ✅ B | Muito fácil | Manter no nível 1 | Baixa |
 | 65 | Help Leon find Luz | Labirinto atraente | Gabarito só em texto | Gabarito com miniatura e caminho desenhado | Média |
-| 66 | How does Leon feel? | Vocabulário emocional | ❌ Pedagógico: as ligações são todas retas | Embaralhar a coluna das carinhas (Entregável 3) | Alta |
+| 66 | How does Leon feel? | Vocabulário emocional. ✅ | Uma ligação é reta (angry → angry) | Reordenar as carinhas para nenhuma ficar em frente (Entregável 3) | Média |
 | 67 | What happened? | Situações claras | Uma só resposta "certa" | Aceitar várias respostas + "Talk about it" | Média |
 | 68 | Star breathing | Autorregulação | Inglês: "Up a point" | "Finger goes up: breathe in. Finger goes down: breathe out." | Média |
 | 69 | Stop and go | Jogo de autocontrole excelente | — | Manter | Baixa |

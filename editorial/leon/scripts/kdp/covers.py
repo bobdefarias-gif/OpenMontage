@@ -11,7 +11,8 @@ sys.path.insert(0, HERE)
 import v1_art_pages as V1
 
 IN = 72
-BLEED, TRIM_W, TRIM_H, SPINE = .125 * IN, 8.5 * IN, 11 * IN, 80 * 0.002347 * IN
+PAGES = int(os.environ.get('PAGES', 80))
+BLEED, TRIM_W, TRIM_H, SPINE = .125 * IN, 8.5 * IN, 11 * IN, PAGES * 0.002347 * IN
 CW, CH = 2 * BLEED + 2 * TRIM_W + SPINE, 2 * BLEED + TRIM_H          # 1255.52 x 810 pt
 FX = BLEED + TRIM_W + SPINE                                         # front trim x
 NAVY, RED, GOLD, GRAY = "#1E2A5A", "#E0533D", "#F7C93E", "#5F6B78"
@@ -19,8 +20,8 @@ A = V1.A
 
 TXT = {
  ("V1", "EN"): dict(sub="Volume 1 · Ages 4–6", tag="Look, remember, count and think — with real art!", by="Written and illustrated by",
-                    blurb=["Leon the lion and his friend Luz invite children aged 4 to 6 on a playful trip through 9 islands of games: looking closely, remembering, shapes, patterns, logic, numbers, words, space and feelings.",
-                           "Many of the games are made with real artworks by Robert de Farias — his lines, his colors, his paintings. Children look, compare, count and remember while they discover real art.",
+                    blurb=["Learning to think, not just learning to answer. Leon the lion and his friend Luz invite children aged 4 to 6 on a playful trip through 9 islands of games: looking closely, remembering, shapes, patterns, logic, numbers, words, space and feelings.",
+                           "Each island opens with a real painting by the artist and author Robert de Farias. Leon tries, makes mistakes and tries again; Luz asks questions and celebrates new ideas.",
                            "Short activities, clear instructions to read aloud, and answers at the back that a grown-up can check in seconds."],
                     inside=["More than 60 playful activities", "Real artworks by the author", "Answers for grown-ups", "A certificate at the end"]),
  ("V1", "FR"): dict(sub="Volume 1 · 4–6 ans", tag="Regarder, retenir, compter et réfléchir — avec de vraies œuvres !", by="Texte et illustrations de",
@@ -117,7 +118,7 @@ def build(vol, lang):
     h = 300; w = h * clip.width / clip.height
     cx, cy = FX + TRIM_W / 2, BLEED + 475
     doc[0].show_pdf_page(fitz.Rect(cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2), src, 0, clip=clip)
-    dst = f"{out}/leons-thinking-book-vol{vol[1]}-{lang}-cover.pdf"
+    dst = os.environ.get("COVER_OUT") or f"{out}/leons-thinking-book-vol{vol[1]}-{lang}-cover.pdf"
     doc.save(dst, garbage=4, deflate=True)
     os.remove(pdf)
     return dst

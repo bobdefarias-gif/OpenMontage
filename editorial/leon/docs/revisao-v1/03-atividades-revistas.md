@@ -149,8 +149,8 @@ Os textos que vão para o livro estão **em inglês** (edição EN). As notas de
 - **Resposta:** blue hat; sun + green tree; X on fish + a cloud + a circle around the hat.
 
 ### p.77 (66) — How does Leon feel? · Feelings · ★
-- **Correção:** embaralhar a coluna das carinhas para a ordem happy, scared, sad, angry. Os Leons ficam na ordem scared, happy, angry, sad.
-- **Resposta:** Leon 1 → scared (2nd); Leon 2 → happy (1st); Leon 3 → angry (4th); Leon 4 → sad (3rd).
+- **Correção:** os Leons são, de cima para baixo: happy, sad, angry, scared. As carinhas passam à ordem angry, scared, happy, sad, para nenhuma ficar em frente do Leon certo.
+- **Resposta:** Leon 1 (happy) → 3rd; Leon 2 (sad) → 4th; Leon 3 (angry) → 1st; Leon 4 (scared) → 2nd.
 
 ### p.78 (67) — What happened? · Feelings · ★
 - **Child:** *"Look at what happened to Leon. How might he feel? Circle a face. You can choose more than one!"*

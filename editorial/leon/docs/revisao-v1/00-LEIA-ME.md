@@ -20,7 +20,6 @@ Resposta ao "Master Prompt". Fonte principal: o PDF original do V1 EN, com as 80
   - a instrução errada da p.33 ("fish" numa linha de estrelas);
   - nomes das ilhas inconsistentes;
   - a frase de venda imprecisa da p.4;
-  - as ligações em linha reta da p.66.
 - **O que mais eleva a qualidade:**
   - aberturas de ilha com as pinturas de Robert;
   - Leon e Luz com papel real (Leon erra e tenta de novo, Luz pergunta);

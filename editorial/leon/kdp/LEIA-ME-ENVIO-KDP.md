@@ -43,3 +43,5 @@ cd ../leon && PLATES=../robert/plates_hd python3 scripts/art_prep.py
 python3 scripts/kdp/compose.py V1 && python3 scripts/kdp/compose.py V2 && python3 scripts/kdp/covers.py
 python3 scripts/kdp/check_pdf.py build/kdp/leons-*.pdf
 ```
+
+> ⚠️ Esta pasta é a versão anterior (80 páginas). A versão em vigor do V1 EN está em `../kdp-v1-revisado/`.
