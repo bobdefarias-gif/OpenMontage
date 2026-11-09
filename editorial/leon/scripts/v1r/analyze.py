@@ -24,7 +24,7 @@ for pn in range(1, 81):
         if txt.strip().startswith("For grown-ups"):
             gu.append({"rect": list(fitz.Rect(b["bbox"])), "text": txt.strip()})
     out[pn] = {"head_bottom": round(hb, 1), "content": [round(v, 1) for v in bb] if not bb.is_empty else None, "grownups": gu}
-json.dump(out, open("build/v1r_geom.json", "w"), indent=0)
+json.dump(out, open(sys.argv[2] if len(sys.argv) > 2 else "build/v1r_geom.json", "w"), indent=0)
 for pn in range(8, 76):
     o = out[pn]
     print(pn, o["head_bottom"], o["content"], "GU" if o["grownups"] else "")

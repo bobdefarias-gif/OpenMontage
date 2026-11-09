@@ -5,7 +5,14 @@ from spec import ISLANDS, ACT, OPENERS, OPENER_TITLES, ORIG_TO_NEW
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 R = os.path.dirname(os.path.dirname(HERE))
+LANG = "EN"
 SRC = f"{R}/ref/leons-thinking-book-vol1-EN-interior.pdf"
+
+
+def set_lang(lang):
+    global LANG, SRC
+    LANG = lang
+    SRC = f"{R}/ref/leons-thinking-book-vol1-{lang}-interior.pdf"
 FONTS = f"file://{R}/fonts/"
 ARTB, ART = f"file://{R}/art_b", f"file://{R}/art"
 NAVY, GRAY, RED, GOLD, BORDER, BGC, CREAM = "#1E2A5A", "#5F6B78", "#E0533D", "#F7C93E", "#D5DAE0", "#F4F7FA", "#FFF8E1"
@@ -250,7 +257,7 @@ def p_opener(n, isl, paint, who, bubble, detective, adult):
     return section(f"""
       <div class="a" style="left:0;right:0;top:0;height:150pt;background:{col}"></div>
       <div class="a" style="left:{x0}pt;top:50pt;font:600 9pt 'Lexend';letter-spacing:1.6pt;text-transform:uppercase;color:{tc};opacity:.85">{H.escape(skill)}</div>
-      <div class="a" style="left:{x0}pt;top:68pt;font:800 40pt/1 'Baloo 2';color:{tc}">{H.escape(OPENER_TITLES[isl])}</div>
+      <div class="a" style="left:{x0}pt;top:68pt;width:{x1 - x0}pt;white-space:nowrap;font:800 40pt/1 'Baloo 2';color:{tc}" class="fitop">{H.escape(OPENER_TITLES[isl])}</div>
       {img}
       <div class="a" style="left:{x0 + 130}pt;top:572pt;width:{x1 - x0 - 130}pt;background:#fff;border:2pt solid {NAVY};border-radius:16pt;padding:9pt 13pt;font:400 15pt/1.3 'Andika'">“{H.escape(bubble)}”</div>
       <div class="a card" style="left:{x0}pt;width:{x1 - x0}pt;top:680pt;padding:9pt 13pt;font:400 12.5pt/1.3 'Andika';border-color:{col}">
@@ -416,10 +423,10 @@ def overlay(n, a, bottoms):
     if n == 16:   # balloon strings: names under the characters
         for x, t in [(152, "Leon"), (306, "Luz"), (462, "bird")]:
             extra += f'<div class="a" style="left:{x - 40}pt;width:80pt;top:679pt;text-align:center;font:700 11pt \'Andika\'">{t}</div>'
-    if n == 64:   # rhyme time: name the dish
+    if n == 64 and LANG == "EN":   # rhyme time: name the dish
         extra += f'<div class="a" style="left:430pt;width:84pt;top:522pt;text-align:center;font:700 11pt \'Andika\';color:{GRAY}">dish</div>'
     if n == 40:   # my own pattern: two examples first
-        ex = lambda cols, who: ('<div style="display:flex;align-items:center;gap:6pt;margin:4pt 0"><span style="font:700 11pt Andika;width:84pt">' + who + "</span>"
+        ex = lambda cols, who: ('<div style="display:flex;align-items:center;gap:6pt;margin:4pt 0"><span style="font:700 11pt Andika;width:120pt;white-space:nowrap">' + who + "</span>"
                                 + "".join(f'<span style="width:22pt;height:22pt;border-radius:50%;background:{c};border:1.8pt solid {NAVY};display:inline-block"></span>' for c in cols) + "</div>")
         extra += (f'<div class="a" style="left:{x0 + 60}pt;top:178pt">' + ex([RED, "#3B82C4"] * 3, "Leon’s pattern:")
                   + ex([GOLD, GOLD, "#9ACB45"] * 2, "Luz’s pattern:") + "</div>")
@@ -451,7 +458,7 @@ def parse_original_answers():
         cur = None
         for s in spans:
             x, t = s["bbox"][0], s["text"]
-            if x < 104 and re.match(r"p\.\s*\d+", t.strip()):
+            if x < 104 and re.match(r"(p\.|blz\.)\s*\d+", t.strip()):
                 cur = {"p": int(re.findall(r"\d+", t)[0]), "title": "", "ans": ""}; rows.append(cur)
             elif cur and 104 <= x < 264:
                 cur["title"] += (" " if cur["title"] else "") + t.strip()
@@ -492,6 +499,8 @@ NEW_ROWS = [
 
 
 def answer_rows():
+    if LANG != "EN":
+        return answer_rows_loc()
     rows = []
     for r in parse_original_answers():
         if r["p"] == 73:
@@ -510,6 +519,69 @@ def answer_rows():
         rows.append({"p": n, "title": t, "ans": a})
     rows.sort(key=lambda r: r["p"])
     return rows
+
+
+def answer_rows_loc():
+    import i18n, json
+    ov, new_rows = i18n.OVERRIDE[LANG], i18n.NEW_ROWS[LANG]
+    orig = json.load(open(f"{R}/build/v1_orig_strings.json"))
+    new_to_orig = {v: k for k, v in ORIG_TO_NEW.items()}
+    def title_of(n):
+        if n in i18n.NEW_TITLES[LANG]:
+            return i18n.NEW_TITLES[LANG][n]
+        return orig[str(new_to_orig[n])][LANG]["title"]
+    rows = []
+    for r in parse_original_answers():
+        if r["p"] == 73:
+            continue
+        n = ORIG_TO_NEW.get(r["p"])
+        if n is None:
+            continue
+        rows.append({"p": n, "title": title_of(n), "ans": ov.get(n, r["ans"])})
+    have = {r["p"] for r in rows}
+    for n, ans in ov.items():
+        if n not in have:
+            rows.append({"p": n, "title": title_of(n), "ans": ans})
+    for n, t, a in new_rows:
+        rows.append({"p": n, "title": t, "ans": a})
+    rows.sort(key=lambda r: r["p"])
+    return rows
+
+
+def translate_html(doc):
+    """Replace every English text node by its FR/NL version (new strings from i18n, unchanged activity text from the originals)."""
+    import i18n, json, html as HH
+    col = 1 if LANG == "FR" else 2
+    tr = {e: row[col] for row in i18n.T for e in [row[0]]}
+    orig = json.load(open(f"{R}/build/v1_orig_strings.json"))
+    for p, v in orig.items():
+        for k in ("title", "ins"):
+            e, l = v["EN"][k], v[LANG][k]
+            if e and l:
+                tr.setdefault(e, l)
+                tr.setdefault(e.rstrip(" →").strip(), l.replace("\u202f", " ").rstrip(" →").strip())
+    missing = set()
+    head, body = doc.split("<body>", 1)
+    def sub(m):
+        raw = m.group(1)
+        u = HH.unescape(raw)
+        key = u.strip()
+        if not key or re.fullmatch(r"[\d\s.,:→+=–\-·?]+", key) or key in ("Leon", "Luz", "Robert de Farias", "Leon’s Thinking Book", "BANG!"):
+            return m.group(0)
+        if key not in tr:
+            missing.add(key)
+            return m.group(0)
+        lead = u[: len(u) - len(u.lstrip())]
+        trail = u[len(u.rstrip()):]
+        return ">" + HH.escape(lead + tr[key] + trail, quote=False) + "<"
+    body = re.sub(r">([^<>]+)<", sub, body)
+    if missing:
+        open(f"{R}/build/v1r/missing_{LANG}.txt", "w").write("\n".join(sorted(missing)))
+    body = body.replace("\u202f", "\u00a0")
+    if LANG == "FR":   # French typography: non-breaking space before ? ! : ; and inside « »
+        body = re.sub(r" ([?!:;»])", "\u00a0\\1", body)
+        body = body.replace("« ", "«\u00a0")
+    return head.replace('lang="en"', f'lang="{LANG.lower()}"') + "<body>" + body
 
 
 ARROW = '<svg width="9pt" height="7pt" viewBox="0 0 12 8" style="vertical-align:0"><path d="M0 4h10M7 1l3 3-3 3" stroke="#1E2A5A" stroke-width="1.4" fill="none"/></svg>'
@@ -580,4 +652,20 @@ def html_pages(bottoms):
     missing = [n for n in range(1, 97) if n not in secs]
     assert not missing, missing
     body = "".join(secs[n] for n in range(1, 97))
-    return f'<!doctype html><html lang="en"><head><meta charset="utf-8"><style>{CSS}</style></head><body>{body}</body></html>'
+    js = "<script>document.fonts.ready.then(()=>{for(const e of document.querySelectorAll('.fitop')){let s=40;while(e.scrollWidth>e.clientWidth&&s>24){s-=1;e.style.fontSize=s+'pt'}}})</script>"
+    doc = f'<!doctype html><html lang="en"><head><meta charset="utf-8"><style>{CSS}</style></head><body>{body}{js}</body></html>'
+    doc = doc if LANG == "EN" else translate_html(doc)
+    return fit_titles(doc)
+
+
+def fit_titles(doc):
+    """Shrink island-opener titles that would overflow (measured with the real Baloo 2 ExtraBold metrics)."""
+    import html as HH
+    f = fitz.Font(fontfile=f"{R}/fonts/ttf/Baloo2-800.ttf")
+    def sub(m):
+        w = float(m.group(1)); txt = HH.unescape(m.group(3))
+        size = 40.0
+        while f.text_length(txt, size) > w - 4 and size > 22:
+            size -= 1
+        return m.group(0).replace("font:800 40pt/1", f"font:800 {size:.0f}pt/1")
+    return re.sub(r'width:([\d.]+)pt;white-space:nowrap;(font:800 40pt/1 \'Baloo 2\';color:[^"]+)" class="fitop">([^<]+)<', sub, doc)

@@ -1,4 +1,4 @@
-# Leon's Thinking Book: Volume 1 EN, edição revista (96 páginas)
+# Leon's Thinking Book: Volume 1, edição revista (96 páginas), EN · FR · NL
 
 Esta edição substitui a pasta `kdp/` anterior, que tinha 80 páginas. Aplica a revisão completa de `docs/revisao-v1/`.
 
@@ -39,7 +39,7 @@ Esta edição substitui a pasta `kdp/` anterior, que tinha 80 páginas. Aplica a
 - **Capa:** passou para 96 páginas, com texto da contracapa honesto.
 
 ## Antes de publicar
-1. **Revisão por falante nativo de inglês** de todo o texto novo.
+1. **Revisão por falantes nativos** (EN, FR e NL-BE) de todo o texto novo.
 2. **Previewer do KDP.**
 3. **Cópia de prova impressa:** verificar a cor das pinturas e a legibilidade a preto e branco.
 4. **Teste com crianças** (recomendado). Ver `docs/revisao-v1/07-controle-de-qualidade.md`. O livro ainda não foi testado com crianças.
@@ -47,12 +47,11 @@ Esta edição substitui a pasta `kdp/` anterior, que tinha 80 páginas. Aplica a
 ## Limitações conhecidas
 - **Pinturas:** vêm de fotos de celular ampliadas para 300 dpi. Os originais em alta resolução melhoram a nitidez; basta regenerar.
 - **Caixas opcionais:** 1 caixa não coube na p.16, porque a atividade ocupa a página.
-- **FR e NL:** ainda não foram feitas. Cada língua precisa da tradução dos textos novos e da revisão de um falante nativo.
+- **FR e NL:** prontos. Os textos das atividades que não mudaram vêm dos PDFs FR/NL originais. Os textos novos (guia para pais, aberturas, caixas, páginas novas e respostas novas) foram traduzidos por mim e **precisam da revisão de um falante nativo**.
 
-## Regenerar
+## Regenerar (trocar XX por EN, FR ou NL)
 ```bash
-python3 scripts/v1r/analyze.py
-python3 scripts/v1r/build.py
-PAGES=96 COVER_OUT=build/v1r/leons-thinking-book-vol1-EN-cover-revised.pdf python3 -c "import sys;sys.path.insert(0,'scripts/kdp');import covers;covers.build('V1','EN')"
-PAGES=96 python3 scripts/kdp/check_pdf.py build/v1r/*revised.pdf
+V1R_LANG=XX python3 scripts/v1r/build.py
+PAGES=96 COVER_OUT=build/v1r/XX/leons-thinking-book-vol1-XX-cover-revised.pdf python3 -c "import sys;sys.path.insert(0,'scripts/kdp');import covers;covers.build('V1','XX')"
+PAGES=96 python3 scripts/kdp/check_pdf.py build/v1r/XX/*revised.pdf
 ```

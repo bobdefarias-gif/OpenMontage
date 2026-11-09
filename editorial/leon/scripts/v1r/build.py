@@ -8,10 +8,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 R = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, HERE)
 from spec import ISLANDS, ACT, OPENERS, OPENER_TITLES, ORIG_TO_NEW
+import pages_html
 from pages_html import html_pages
+import i18n
+LANG = os.environ.get("V1R_LANG", "EN")
+pages_html.set_lang(LANG)
 
-SRC = f"{R}/ref/leons-thinking-book-vol1-EN-interior.pdf"
-OUT = f"{R}/build/v1r"
+SRC = f"{R}/ref/leons-thinking-book-vol1-{os.environ.get('V1R_LANG', 'EN')}-interior.pdf"
+OUT = f"{R}/build/v1r/{os.environ.get('V1R_LANG', 'EN')}"
 FT = f"{R}/fonts/ttf"
 F_REG, F_BOLD, F_TITLE = f"{FT}/Andika-Regular.ttf", f"{FT}/Andika-Bold.ttf", f"{FT}/Baloo2-800.ttf"
 BG = (0.957, 0.969, 0.980)
@@ -32,7 +36,7 @@ def gu_rects(page):
     cards = [d["rect"] for d in page.get_drawings() if d.get("fill") and d["rect"].width > 200 and d["rect"].height < 120]
     for b in page.get_text("dict")["blocks"]:
         txt = " ".join(s["text"] for l in b.get("lines", []) for s in l["spans"])
-        if txt.strip().startswith("For grown-ups"):
+        if txt.strip().startswith(("For grown-ups", "Pour l’adulte", "Voor volwassenen")):
             r = fitz.Rect(b["bbox"])
             box = [c for c in cards if c.contains(r)]
             out.append((min(box, key=lambda c: c.get_area()) if box else r) + (-5, -5, 5, 5))
@@ -69,7 +73,7 @@ def restyle(doc, pno, header_bottom=None, replace=None, drop=(), keep_header=Fal
                           text=fitz.PDF_REDACT_TEXT_REMOVE)
     for s in keep:
         t = s["text"].strip()
-        t = replace.get(t, t)
+        t = replace.get(t, replace.get(t.replace("\u202f", " "), t)).replace("\u202f", "\u00a0")
         bold = "Bold" in s["font"] or "Oblique" in s["font"] and False
         big = s["size"] >= 22
         key = "title" if big else ("bold" if "Bold" in s["font"] else "reg")
@@ -104,15 +108,18 @@ def render(html_path, pdf_path):
 
 
 def main():
-    geom = json.load(open(f"{R}/build/v1r_geom.json"))
+    gp = f"{R}/build/v1r_geom_{LANG}.json"
+    if not os.path.exists(gp):
+        subprocess.run([sys.executable, f"{HERE}/analyze.py", SRC, gp], check=True, capture_output=True)
+    geom = json.load(open(gp))
     work = fitz.open(SRC)            # restyled copy
     pristine = fitz.open(SRC)        # untouched (for stamps)
     act = {a[0]: a for a in ACT}
 
     # ---------- restyle the original activity pages
     special = {
-        11: dict(drop=("Circle the differences in the bottom picture.",)),
-        68: dict(replace={"Up a point: breathe in. Down: breathe out.": "Finger goes up: breathe in. Finger goes down: breathe out."}),
+        11: dict(drop=("Circle the differences in the bottom picture.",) if LANG == "EN" else (i18n.DROP11[LANG],)),
+        68: dict(replace={"Up a point: breathe in. Down: breathe out.": "Finger goes up: breathe in. Finger goes down: breathe out."}) if LANG == "EN" else {},
         66: dict(extra_redact=[(352, 169, 581, 693)]),                    # faces column re-stamped in a new order
         46: dict(extra_redact=[(512, 452, 594, 538)]),                    # Luz moved next to the 9
     }
@@ -138,13 +145,14 @@ def main():
     # full-page restyles
     restyle(work, 2)                                                       # p.3 belongs to
     restyle(work, 72, header_bottom=geom["73"]["head_bottom"])            # picnic scene source (drop old footer)
-    restyle(work, 6, replace={"Look closely": "Look Closely", "page 8": "page 10", "Remember": "Remember", "page 16": "page 19",
+    MAP_EN = {"Look closely": "Look Closely", "page 8": "page 10", "Remember": "Remember", "page 16": "page 19",
                               "Shapes": "Shapes & Colors", "page 24": "page 28", "Patterns": "Patterns", "page 30": "page 35",
                               "Logic": "Logic", "page 36": "page 42", "Numbers": "Numbers", "page 43": "page 50",
                               "Words": "Words", "page 52": "page 60", "Space": "Space", "page 60": "page 69",
                               "Feelings": "Feelings", "page 66": "page 76", "Brain Challenge: page 72": "Big Challenge: page 85",
-                              "Leon & Luz’s island map": "Leon & Luz’s island map", "Visit all 9 islands!": "Visit all 9 islands — then the Big Challenge!"})
-    restyle(work, 74, replace={"for finishing Leon’s Thinking Book, Volume 1": "for looking, remembering, trying and trying again!"})
+                              "Leon & Luz’s island map": "Leon & Luz’s island map", "Visit all 9 islands!": "Visit all 9 islands — then the Big Challenge!"}
+    restyle(work, 6, replace=MAP_EN if LANG == "EN" else i18n.MAP[LANG])
+    restyle(work, 74, replace={"for finishing Leon’s Thinking Book, Volume 1": "for looking, remembering, trying and trying again!"} if LANG == "EN" else i18n.CERT[LANG])
     restyle(work, 79)
     # restyled copy of p.66 for the face cards (text already in Andika)
     faces = fitz.open(SRC)
@@ -194,19 +202,23 @@ def main():
     lp.add_redact_annot(fitz.Rect(430, 172, 540, 282), fill=False)
     lp.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE, graphics=fitz.PDF_REDACT_LINE_ART_REMOVE_IF_COVERED)
     LEON, LUZ = (108, 186, 528, 636), (430, 172, 540, 282)
+    ll_src = fitz.open(SRC)                 # title page without any text (Leon + Luz)
+    for s_ in spans_of(ll_src[0]):
+        ll_src[0].add_redact_annot(fitz.Rect(s_["bbox"]), fill=False)
+    ll_src[0].apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE, graphics=fitz.PDF_REDACT_LINE_ART_NONE)
     from pages_html import STAMPS
     for (pg, who, rect) in STAMPS:
         if who == "leon":
             stamp(pg, leon_src, 0, LEON, rect)
         elif who == "luz":
-            stamp(pg, pristine, 0, LUZ, rect)
+            stamp(pg, ll_src, 0, LUZ, rect)
         elif who == "leonluz":
-            stamp(pg, pristine, 0, (108, 172, 540, 636), rect)
+            stamp(pg, ll_src, 0, (108, 172, 540, 636), rect)
         elif who.startswith("orig:"):                      # orig:<page>:<x0,y0,x1,y1>
             _, opg, clip = who.split(":")
             stamp(pg, faces if False else work, int(opg) - 1, tuple(map(float, clip.split(","))), rect)
 
-    dst = f"{OUT}/leons-thinking-book-vol1-EN-interior-revised.pdf"
+    dst = f"{OUT}/leons-thinking-book-vol1-{LANG}-interior-revised.pdf"
     out.save(dst, garbage=4, deflate=True)
     print(dst, len(out))
 
