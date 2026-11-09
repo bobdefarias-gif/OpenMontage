@@ -45,3 +45,5 @@ python3 scripts/kdp/check_pdf.py build/kdp/leons-*.pdf
 ```
 
 > ⚠️ Esta pasta é a versão anterior (80 páginas). A versão em vigor do V1 EN está em `../kdp-v1-revisado/`.
+
+> ⚠️ Os PDFs desta pasta são a versão anterior (80 páginas). As versões em vigor estão em `../kdp-v1-revisado/` e `../kdp-v2-revisado/`.

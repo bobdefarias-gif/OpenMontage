@@ -1,0 +1,6 @@
+leons-thinking-book-vol2-EN-cover.pdf: 1 p, 17.4753x11.25 in, fonts 3 (not embedded: none), images <300dpi: 4 min 300 dpi
+leons-thinking-book-vol2-EN-interior.pdf: 96 p, 8.625x11.25 in, fonts 8 (not embedded: none), images <300dpi: 0
+leons-thinking-book-vol2-FR-cover.pdf: 1 p, 17.4753x11.25 in, fonts 3 (not embedded: none), images <300dpi: 4 min 300 dpi
+leons-thinking-book-vol2-FR-interior.pdf: 96 p, 8.625x11.25 in, fonts 8 (not embedded: none), images <300dpi: 0
+leons-thinking-book-vol2-NL-cover.pdf: 1 p, 17.4753x11.25 in, fonts 3 (not embedded: none), images <300dpi: 4 min 300 dpi
+leons-thinking-book-vol2-NL-interior.pdf: 96 p, 8.625x11.25 in, fonts 8 (not embedded: none), images <300dpi: 0

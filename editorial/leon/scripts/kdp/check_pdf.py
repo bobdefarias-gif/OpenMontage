@@ -22,7 +22,7 @@ def check(path):
             if dpi < 300:
                 low.append((i + 1, round(dpi)))
     fonts = {f[3]: f for p in d for f in p.get_fonts(full=True)}
-    not_emb = [n for n, f in fonts.items() if f[1] in ("", "n/a") or not f[0]]
+    not_emb = [n for n, f in fonts.items() if (f[1] in ("", "n/a") and f[2] != "Type3") or not f[0]]
     n = len(d)
     if not cover and n != pages:
         issues.append(f"{n} pages (expected {pages})")
