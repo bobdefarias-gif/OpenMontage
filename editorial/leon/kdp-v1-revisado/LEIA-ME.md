@@ -52,6 +52,9 @@ Esta edição substitui a pasta `kdp/` anterior, que tinha 80 páginas. Aplica a
 ## Regenerar (trocar XX por EN, FR ou NL)
 ```bash
 V1R_LANG=XX python3 scripts/v1r/build.py
+cp build/v1r/XX/leons-thinking-book-vol1-XX-interior-revised.pdf kdp-v1-revisado/leons-thinking-book-vol1-XX-interior.pdf
+python3 scripts/kdp/fit_safe.py kdp-v1-revisado/leons-thinking-book-vol1-XX-interior.pdf 0.92 9 41 86   # margem segura KDP
+python3 scripts/kdp/check_margins_px.py kdp-v1-revisado/*interior.pdf
 PAGES=96 COVER_OUT=build/v1r/XX/leons-thinking-book-vol1-XX-cover-revised.pdf python3 -c "import sys;sys.path.insert(0,'scripts/kdp');import covers;covers.build('V1','XX')"
 PAGES=96 python3 scripts/kdp/check_pdf.py build/v1r/XX/*revised.pdf
 ```

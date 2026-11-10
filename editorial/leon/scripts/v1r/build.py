@@ -65,7 +65,7 @@ def restyle(doc, pno, header_bottom=None, replace=None, drop=(), keep_header=Fal
     for g in gus:
         page.add_redact_annot(g, fill=BG)
     for r in extra_redact:
-        page.add_redact_annot(fitz.Rect(r), fill=BG)
+        page.add_redact_annot(fitz.Rect(r), fill=False)
     if header_bottom is not None:      # old asterisk stars + header icons area
         for r in [(440, 40, 600, 82)]:
             page.add_redact_annot(fitz.Rect(r), fill=False)
@@ -193,7 +193,7 @@ def main():
     for slot, old in enumerate([2, 0, 1, 3]):
         stamp(77, faces, 65, cards[old], cards[slot])
     # p.54 (orig 46): Luz next to the final 9
-    stamp(54, pristine, 45, (512, 452, 594, 538), (512, 490, 594, 576))
+    stamp(54, pristine, 45, (512, 452, 594, 538), (507, 498, 579, 570))
     # p.1 / p.6 / openers: Leon (without Luz) and Luz from the original title page
     leon_src = fitz.open(SRC)
     lp = leon_src[0]
